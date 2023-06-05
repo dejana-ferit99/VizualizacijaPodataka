@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+    <link rel="stylesheet" href="../style/style1.css">
+
+</head>
+    <body>
+        <header>
+            <h1>Sastav stanovništva Republike Hrvatske</h1>
+        </header>
+        
+        <div class="basic-info">
+            <h2>Osnovni podatci: </h2>
+            <div class="basic-info-p">
+                <p><b>Naziv:</b> Grad Zagreb</p>
+                <p><b>Broj stanovnika:</b> 767131</p>
+                <p><b>Župan:</b> Tomislav Tomašević</p>
+            </div>
+            <h2>PODIJELA PO DOBNIM SKUPINAMA</h2>
+        </div>
+        
+       <div id="piechart">
+        <svg id="chart"></svg>
+       </div>
+
+        <script>
+            var data = [
+            { label: 'Muškarci', value: 358616 },
+            { label: 'Žene', value: 408515 }
+            ];
+
+            var width = 1000;
+            var height = 1000;
+            var radius = 500;
+
+            var pie = d3.pie()
+            .value(function(d) { return d.value; });
+
+            var arc = d3.arc()
+                    .innerRadius(0)
+                    .outerRadius(radius);
+
+            var svg = d3.select('#chart')
+                    .attr('width', width)
+                    .attr('height', height)
+                    .append('g')
+                    .attr('transform', 'translate(' + (width / 2) + ',' + (height / 2) + ')');
+
+            var pieArcs = svg.selectAll('.arc')
+                    .data(pie(data))
+                    .enter()
+                    .append('g')
+                    .attr('class', 'arc');
+
+            pieArcs.append('path')
+                    .attr('d', arc)
+                    .attr('fill', function(d, i) {
+                        if (i === 1) {
+                            return 'red';
+                        } else {
+                            return 'blue';
+                        }
+                    })
+            .on('mouseover', function(d) {
+                var pointer = d3.select('#pointer');
+                pointer.html(d.data.label + ': ' + d.data.value)
+                .style('visibility', 'visible');
+            })
+            .on('mousemove', function() {
+                var pointer = d3.select('#pointer');
+                pointer.style('top', (d3.event.pageY - 10) + 'px')
+                .style('left', (d3.event.pageX + 10) + 'px');
+            })
+            .on('mouseout', function() {
+                var pointer = d3.select('#pointer');
+                pointer.style('visibility', 'hidden');
+            });
+
+            var pointer = d3.select('body')
+            .append('div')
+            .attr('id', 'pointer')
+            .style('position', 'absolute')
+            .style('background-color', 'white')
+            .style('padding', '10px')
+            .style('border', '2px solid black')
+            .style('font-size', '25px');
+        </script>
+        <div class="next_page">
+            <a href="./grad_zagreb_2.html">NEXT</a>
+        </div>
+    </body>
+</html>

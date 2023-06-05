@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+    <script src="http://d3js.org/topojson.v1.min.js"></script>
+    <script src="http://d3js.org/d3js.org-timer.v1.min.js"></script>
+    <link rel="stylesheet" href="../style/style.css">
+   
+</head>
+    <body>
+        <header>
+            <h1>Sastav stanovništva Republike Hrvatske</h1>
+        </header>
+        <div id="chart-container"></div>
+        <script>
+            var width =1000;
+            var height = 650;
+            var projection = d3.geo.mercator()
+                                    .center([0, 10])
+                                    .scale(6000)
+                                    .translate([17600, 4500])
+                                    .rotate([-180, 0]);
+            var path = d3.geo.path()
+                            .projection(projection);
+            var svg = d3.select("body").append("svg")
+                            .attr("width", width)
+                            .attr("height", height);
+            d3.json("cro.json", function(error, cro) {
+                var data = topojson.feature(cro, cro.objects.layer1);
+                var color = d3.scale.linear()
+                                .domain([0, 300000])
+                                .range(["white", "yellow"]);
+                var g = svg.append("g");
+                g.selectAll("path.county")
+                    .data(data.features)
+                    .enter()
+                    .append("path")
+                    .attr("class", "country")
+                    .attr("id", function (d){return d.id;})
+                    .attr("fill", function(d) {return color(d.properties.population);})
+                    .attr("d", path)
+                    .style("stroke", "gray")
+                    .style("stroke-width", 1)
+                    .style("stroke-opacity", 1)
+                    .on("mouseover", function(d){
+                        d3.select("#zupanija").text("Županija: "+d.properties.name);
+                    })
+                    .on("click", function(d){
+                        var fileName = "";
+                        switch (d.properties.name) {
+                            case "Zagrebačka županija":
+                                fileName = "../zagrebacka/zagrebacka_zupanija.html";
+                            break;
+                            case "Krapinsko-zagorska županija":
+                                fileName = "../krapinsko_zagorska/krapinsko-zagorska.html";
+                            break;
+                            case "Sisačko-moslavačka županija":
+                                fileName = "../sisacko_moslavacka/sisacko-moslavacka.html";
+                            break;
+                            case "Karlovačka županija":
+                                fileName = "../karlovacka/karlovacka_zupanija.html";
+                            break;
+                            case "Varaždinska županija":
+                                fileName = "/varazdinska/varazdinska_zupanija.html";
+                            break;
+                            case "Koprivničko-križevačka županija":
+                                fileName = "../koprivnicko_krizevacka/koprivnicko_krizavacka.html";
+                            break;
+                            case "Bjelovarsko-bilogorska županija":
+                                fileName = "../bjelovarsko_bilogorska/bjelovarsko_bilogorska.html";
+                            break;
+                            case "Primorsko-goranska županija":
+                                fileName = "../primorsko_goranska/primorsko_goranska.html";
+                            break;
+                            case "Ličko-senjska županija":
+                                fileName = "../licko_senjska/licko_senjska.html";
+                            break;
+                            case "Virovitičko-podravska županija":
+                                fileName = "../viroviticko_posavska/viroviticko_podravska.html";
+                            break;
+                            case "Požeško-slavonska županija":
+                                fileName = "../pozesko_slavonska/pozesko_slavonska.html";
+                            break;
+                            case "Brodsko-posavska županija":
+                                fileName = "../brodsko_posavska/brodsko-posavska.html";
+                            break;
+                            case "Zadarska županija":
+                                fileName = "../zadarska/zadarska_zupanija.html";
+                            break;
+                            case "Osječko-baranjska županija":
+                                fileName = "../osjecko_baranjska/osjecko_baranjska.html";
+                            break;
+                            case "Šibensko-kninska županija":
+                                fileName = "../sibensko_kninska/sibensko-kninska.html";
+                            break;
+                            case "Vukovarsko-srijemska županija":
+                                fileName = "../vukovarsko_srijemska/vukovarsko_srijemska.html";
+                            break;
+                            case "Splitsko-dalmainska županija":
+                                fileName = "../splitsko_dalmatinska/splitsko_dalmatinska.html";
+                            break;
+                            case "Istarska županija":
+                                fileName = "../istarska/istarska_zupanija.html";
+                            break;
+                            case "Dubrovačko-neretvanska županija":
+                                fileName = "../dubrovačko_neretvanska/dubrovacko_neretvanska.html";
+                            break;
+                            case "Međimurska županija":
+                                fileName = "../medjimurska/medjimurska_zupanija.html";
+                            break;
+                            case "Grad Zagreb":
+                                fileName = "../grad_zagreb/grad_zagreb.html";
+                            break;
+                        }
+                        window.open(fileName, "_blank");  
+                    });
+            });
+		</script>
+        <div>
+            <p id="zupanija"></p>
+        </div>
+    </body>
+</html>

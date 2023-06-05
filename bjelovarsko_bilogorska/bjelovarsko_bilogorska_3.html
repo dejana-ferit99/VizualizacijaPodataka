@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+    <link rel="stylesheet" href="../style/style1.css">
+
+</head>
+    <body>
+        <header>
+            <h1>Sastav stanovništva Republike Hrvatske</h1>
+        </header>
+        
+        <div class="basic-info">
+            <h2>Osnovni podatci: </h2>
+            <div class="basic-info-p">
+                <p><b>Naziv:</b> Bjelovarsko-bilogorska županija</p>
+                <p><b>Broj stanovnika:</b> 101879</p>
+                <p><b>Župan:</b> Marko Marušić</p>
+            </div>
+            <h2>PODIJELA PO SPOLU</h2>
+        </div>
+
+       <div id="treechart">
+        <svg id="chart"></svg>
+       </div>
+
+        <script>
+            var width = 1000;
+            var height = 1000;
+
+            var treemap = d3.treemap()
+            .size([width, height])
+            .padding(4);
+
+            var data = {
+            name: "Root",
+            children: [
+                { name: "Hrvati", value: 88511 },
+                { name: "Srbi", value: 4964 },
+                { name: "Romi", value: 381 },
+                { name: "Bošnjaci", value: 86 },
+                { name: "Mađari", value: 633 },
+                { name: "Talijani", value: 48 },
+                { name: "Ostali", value: 7256 },
+            ]
+            };
+
+            var root = d3.hierarchy(data)
+            .sum(function(d) { return d.value; })
+            .sort(function(a, b) { return b.value - a.value; });
+
+            treemap(root);
+
+            var svg = d3.select("#chart")
+                .attr("width", width)
+                .attr("height", height);
+
+            var nodes = svg.selectAll("g")
+                .data(root.leaves())
+                .enter()
+                .append("g")
+                .attr("transform", function(d) { return "translate(" + d.x0 + "," + d.y0 + ")"; });
+
+            nodes.append("rect")
+                    .attr("width", function(d) { return d.x1 - d.x0; })
+                    .attr("height", function(d) { return d.y1 - d.y0; })
+                    .attr("fill", "#32CD32")
+                    .on("mouseover", function(d) {
+                        d3.select(this).attr("fill", "#98FB98");
+                    })
+                    .on("mouseout", function(d) {
+                        d3.select(this).attr("fill", "#32CD32");
+                    })
+                    .append("title")
+                    .text(function(d) { return d.data.name +': '+ d.data.value; });
+        </script>
+        <div class="next_page">
+            <a href="./bjelovarsko_bilogorska_4.html">NEXT</a>
+        </div>
+        
+    </body>
+</html>

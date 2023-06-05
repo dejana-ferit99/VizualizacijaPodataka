@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+    <link rel="stylesheet" href="../style/style1.css">
+
+</head>
+    <body>
+        <header>
+            <h1>Sastav stanovništva Republike Hrvatske</h1>
+        </header>
+        
+        <div class="basic-info">
+            <h2>Osnovni podatci: </h2>
+            <div class="basic-info-p">
+                <p><b>Naziv:</b> Krapinsko-zagorska županija</p>
+                <p><b>Broj stanovnika:</b> 120702</p>
+                <p><b>Župan:</b> Željko Kolar</p>
+            </div>
+            <h2>PODIJELA PO DOBNIM SKUPINAMA</h2>
+        </div>
+
+       <div id="barchart">
+        <svg id="chart"></svg>
+       </div>
+
+        <script>
+            var data = [
+                { label: '0-19', value: 22604 },
+                { label: '20-39', value: 29132 },
+                { label: '40-59', value: 34746 },
+                { label: '60+', value: 34220 }
+            ];
+
+            var width = 1000;
+            var height = 1000;
+            var margin = { top: 30, right: 20, bottom: 150, left: 150 };
+            var innerWidth = width - margin.left - margin.right;
+            var innerHeight = height - margin.top - margin.bottom;
+
+            var svg = d3.select('#chart')
+            .attr('width', width)
+            .attr('height', height);
+
+            var chart = svg.append('g')
+                .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
+
+            var xScale = d3.scaleBand()
+            .domain(data.map(function(d) { return d.label; }))
+            .range([0, innerWidth])
+            .padding(0.2);
+
+            var yScale = d3.scaleLinear()
+            .domain([0, d3.max(data, function(d) { return d.value; })])
+            .range([innerHeight, 0]);
+
+            var bars = svg.append('g')
+            .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
+
+            bars.append('g')
+            .attr('transform', 'translate(0,' + innerHeight + ')')
+            .call(d3.axisBottom(xScale))
+            .selectAll('text')
+            .attr('transform', 'rotate(-45)')
+            .attr('text-anchor', 'end')
+            .attr('dx', '-0.8em')
+            .attr('dy', '0.15em')
+            .style('font-size', '25px');
+
+            bars.append('g')
+            .call(d3.axisLeft(yScale))
+            .style('font-size', '25px');
+ 
+            svg.append('text')
+            .attr('class', 'x-axis-label')
+            .attr('x', width / 2)
+            .attr('y', height - margin.bottom/3 )
+            .attr('text-anchor', 'middle')
+            .style('font-size', '30px')
+            .text('Dobne skupine');
+
+            svg.append('text')
+            .attr('class', 'y-axis-label')
+            .attr('transform', 'rotate(-90)')
+            .attr('x', -height / 2)
+            .attr('y', margin.left / 3)
+            .attr('text-anchor', 'middle')
+            .style('font-size', '30px')
+            .text('Broj stanovnika');
+
+            var barchart = bars.selectAll('rect')
+                .data(data)
+                .enter()
+                .append('rect')
+                .attr('x', function(d) { return xScale(d.label); })
+                .attr('y', function(d) { return yScale(d.value); })
+                .attr('width', xScale.bandwidth())
+                .attr('height', function(d) { return innerHeight - yScale(d.value); })
+                .attr('fill', '#FF8C00');
+
+            barchart.append('title')
+                .text(function(d) { return 'Dobna skupina"' + d.label +'"' +': '+d.value; });
+        </script>
+        <div class="next_page">
+            <a href="./krapinsko_zagorska_3.html">NEXT</a>
+        </div>
+    </body>
+</html>
